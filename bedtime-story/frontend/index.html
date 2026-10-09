@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedtime Story Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-heading {
+            background: linear-gradient(135deg, #fbbf24 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow-border {
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        }
+
+        .main-bg {
+            background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+        }
+
+        .input-field {
+            background: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #a78bfa;
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+            outline: none;
+        }
+
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a78bfa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .star {
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        .star:nth-child(2) { animation-delay: 0.5s; }
+        .star:nth-child(3) { animation-delay: 1s; }
+        .star:nth-child(4) { animation-delay: 1.5s; }
+        .star:nth-child(5) { animation-delay: 0.3s; }
+
+        @keyframes moonGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.5); }
+        }
+
+        .moon-glow {
+            animation: moonGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 min-h-screen text-white font-inter">
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+
+        <!-- Sidebar - 1/5 width on large screens -->
+        <aside class="w-full lg:w-1/5 sidebar-gradient border-b lg:border-b-0 lg:border-r border-indigo-900/30 p-4 lg:p-6 flex flex-col">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-500/20">
+                    <i class="fas fa-moon text-white text-xl"></i>
+                </div>
+                <span class="font-space font-bold text-2xl tracking-tight gradient-heading">Storytime</span>
+            </div>
+
+            <!-- Child's Name -->
+            <h3 class="text-purple-300 text-xs font-semibold uppercase tracking-widest mb-2">Child's Name</h3>
+            <div class="mb-4">
+                <input id="childNameInput" type="text" placeholder="Enter name..." class="input-field w-full rounded-xl p-3 text-amber-100 text-sm font-medium placeholder-purple-400/50 pr-8">
+            </div>
+
+            <!-- Age -->
+            <h3 class="text-purple-300 text-xs font-semibold uppercase tracking-widest mb-2">Age</h3>
+            <div class="mb-4">
+                <select id="ageSelect" class="input-field w-full rounded-xl p-3 text-amber-100 text-sm font-medium pr-8">
+                    <option value="" disabled selected class="text-purple-400">Select age...</option>
+                    <option value="3">3 years old</option>
+                    <option value="4">4 years old</option>
+                    <option value="5">5 years old</option>
+                    <option value="6">6 years old</option>
+                    <option value="7">7 years old</option>
+                    <option value="8">8 years old</option>
+                </select>
+            </div>
+
+            <!-- Favorite Things -->
+            <h3 class="text-purple-300 text-xs font-semibold uppercase tracking-widest mb-2">Favorite Things</h3>
+            <div class="mb-4">
+                <input id="interestsInput" type="text" placeholder="dinosaurs, space, cooking..." class="input-field w-full rounded-xl p-3 text-amber-100 text-sm font-medium placeholder-purple-400/50 pr-8">
+            </div>
+
+            <!-- Lesson Theme -->
+            <h3 class="text-purple-300 text-xs font-semibold uppercase tracking-widest mb-2">Lesson Theme</h3>
+            <div class="mb-6">
+                <select id="lessonSelect" class="input-field w-full rounded-xl p-3 text-amber-100 text-sm font-medium pr-8">
+                    <option value="" disabled selected class="text-purple-400">Choose a lesson...</option>
+                    <option value="being brave">Be Brave</option>
+                    <option value="being kind">Be Kind</option>
+                    <option value="trying new things">Try New Things</option>
+                    <option value="sharing with others">Share With Others</option>
+                    <option value="being honest">Be Honest</option>
+                </select>
+            </div>
+
+            <!-- Tell Me a Story Button -->
+            <button id="tellStoryBtn" disabled class="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-900 px-5 py-3 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-yellow-500/30 transition-all duration-300">
+                <i class="fas fa-book-open mr-2"></i> Tell Me a Story
+            </button>
+
+            <!-- Footer -->
+            <div class="mt-auto pt-6 hidden lg:block">
+                <p class="text-indigo-400/50 text-xs">Powered by AI</p>
+            </div>
+        </aside>
+
+        <!-- Main Content - 4/5 width on large screens -->
+        <main class="flex-1 lg:w-4/5 flex flex-col main-bg">
+
+            <!-- Header - Centered -->
+            <header class="px-4 lg:px-8 py-6 lg:py-8 border-b border-indigo-900/30">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h1 class="font-space font-bold text-3xl lg:text-5xl xl:text-6xl tracking-tight mb-3">
+                        <span class="gradient-text">Dreamland Stories</span>
+                    </h1>
+                    <p class="text-purple-300/80 text-base lg:text-lg font-light">Personalized Bedtime Stories That Make Little Ones Drift Off to Sleep</p>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="flex-1 p-4 lg:p-8 overflow-y-auto">
+
+                <!-- Welcome Screen -->
+                <div id="welcomeState" class="h-full flex flex-col items-center justify-center text-center py-8">
+                    <div class="w-28 h-28 lg:w-36 lg:h-36 bg-gradient-to-br from-indigo-900/50 to-slate-900/50 rounded-full flex items-center justify-center mb-6 border border-indigo-800/30 glow-border moon-glow">
+                        <i class="fas fa-moon text-4xl lg:text-5xl text-yellow-300"></i>
+                    </div>
+                    <h2 class="font-space text-2xl lg:text-3xl font-bold gradient-heading mb-3">Time for a Story?</h2>
+                    <p class="text-purple-300/70 text-base lg:text-lg">Fill in the details and let Luna weave a magical tale</p>
+                </div>
+
+                <!-- Story Screen -->
+                <div id="storyState" class="hidden">
+
+                    <!-- Story Info Badge -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <span id="childBadge" class="bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-900 px-5 py-2 rounded-full font-semibold shadow-lg text-sm"></span>
+                            <span id="lessonBadge" class="bg-indigo-900/60 text-purple-300 px-4 py-2 rounded-full text-sm font-medium border border-indigo-700/30"></span>
+                        </div>
+                        <span id="storyPartLabel" class="text-purple-300/80 text-base font-medium">Part 1</span>
+                    </div>
+
+                    <!-- Luna Avatar -->
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="relative">
+                            <!-- Stars around Luna -->
+                            <div class="absolute -top-4 -left-4 star"><i class="fas fa-star text-yellow-300/60 text-xs"></i></div>
+                            <div class="absolute -top-2 right-0 star"><i class="fas fa-star text-yellow-300/40 text-sm"></i></div>
+                            <div class="absolute top-8 -right-6 star"><i class="fas fa-star text-purple-300/50 text-xs"></i></div>
+                            <div class="absolute bottom-4 -left-6 star"><i class="fas fa-star text-yellow-300/50 text-xs"></i></div>
+                            <div class="absolute -bottom-2 right-4 star"><i class="fas fa-star text-purple-300/40 text-xs"></i></div>
+                            <div class="w-44 h-44 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-full overflow-hidden border-4 border-indigo-700/50 shadow-2xl shadow-purple-500/20 float-anim">
+                                <img src="https://nkb-backend-ccbp-media-static.s3-ap-south-1.amazonaws.com/ccbp_beta/media/content_loading/uploads/a807b6ca-700d-453a-9a50-e0a65d88799f_bedtime%20story%20teller.png" alt="Luna" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <p class="text-purple-200 text-lg lg:text-xl font-medium mt-4">Luna</p>
+                    </div>
+
+                    <!-- Speaking Bubble -->
+                    <div class="max-w-2xl mx-auto mb-6">
+                        <div id="speakingBubble" class="hidden flex justify-center items-center gap-3 p-5 bg-indigo-950/50 rounded-2xl border border-indigo-800/30">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 bg-yellow-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                <div class="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                <div class="w-3 h-3 bg-yellow-300 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+                            </div>
+                            <span class="text-purple-200 ml-2 font-medium">Luna is telling your story...</span>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="flex flex-col items-center gap-4 mb-6">
+                        <p id="storyStatus" class="text-purple-300/70 text-base">Preparing your story...</p>
+                    </div>
+
+                    <!-- Story Text Display -->
+                    <div id="storyTextSection" class="hidden max-w-2xl mx-auto mb-6">
+                        <div class="bg-indigo-950/40 rounded-xl p-6 border border-indigo-800/30">
+                            <h4 class="text-lg font-bold mb-3 flex items-center gap-2 gradient-heading">
+                                <i class="fas fa-book-open text-yellow-400"></i>
+                                The Story
+                            </h4>
+                            <p id="storyFullText" class="text-purple-100 leading-relaxed text-sm whitespace-pre-line"></p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                        <button id="continueStoryBtn" disabled class="hidden bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-8 py-3 rounded-full font-bold text-base hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300">
+                            <i class="fas fa-book mr-2"></i> One More Chapter!
+                        </button>
+
+                        <button id="newStoryBtn" class="hidden border-2 border-indigo-700/50 text-purple-300 px-6 py-2.5 rounded-xl transition-all duration-300 hover:border-purple-500/50 hover:text-purple-200 font-medium text-sm">
+                            New Story
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

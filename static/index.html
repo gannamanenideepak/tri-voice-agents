@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tri-voice-agents - Unified Multi-Agent Voice Platform</title>
+    <meta name="description" content="Tri-voice-agents: An integrated voice platform combining Interview Assistant, Bedtime Story Generator, and Language Coach.">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col font-sans selection:bg-slate-700 selection:text-white">
+
+    <!-- ========================================================================= -->
+    <!-- 1. TOP GLOBAL NAVIGATION & AGENT SWITCHER                                  -->
+    <!-- ========================================================================= -->
+    <header class="sticky top-0 z-50 glass-nav border-b border-slate-800/80 px-4 sm:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('overview')">
+                <div class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 shadow-sm">
+                    <i class="fas fa-wave-square text-base"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight text-white brand-title">Tri-voice-agents</span>
+                    <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-300 rounded border border-slate-700">Unified Portal</span>
+                </div>
+            </div>
+
+            <!-- Agent Switcher Navigation Tabs -->
+            <nav class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-full">
+                <button class="agent-nav-tab active flex items-center gap-2 px-3.5 py-1.5 text-sm font-medium" data-tab="overview">
+                    <i class="fas fa-layer-group text-slate-400 text-xs"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="agent-nav-tab flex items-center gap-2 px-3.5 py-1.5 text-sm font-medium" data-tab="interview">
+                    <i class="fas fa-briefcase text-slate-400 text-xs"></i>
+                    <span>Interview Assistant</span>
+                </button>
+                <button class="agent-nav-tab flex items-center gap-2 px-3.5 py-1.5 text-sm font-medium" data-tab="story">
+                    <i class="fas fa-moon text-slate-400 text-xs"></i>
+                    <span>Bedtime Story</span>
+                </button>
+                <button class="agent-nav-tab flex items-center gap-2 px-3.5 py-1.5 text-sm font-medium" data-tab="language">
+                    <i class="fas fa-language text-slate-400 text-xs"></i>
+                    <span>Language Coach</span>
+                </button>
+            </nav>
+
+            <!-- Status Indicator -->
+            <div id="systemStatusPill" class="hidden lg:flex items-center gap-2 px-3 py-1 text-xs font-medium bg-slate-800/80 text-slate-300 border border-slate-700 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>All 3 Voice Agents Ready</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. MAIN APPLICATION VIEWS                                                 -->
+    <!-- ========================================================================= -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 0: HUB OVERVIEW                                                 -->
+        <!-- ===================================================================== -->
+        <section id="view-overview" class="agent-view">
+            
+            <!-- Hero Header -->
+            <div class="text-center py-8 lg:py-12 max-w-3xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-slate-300 text-xs font-medium mb-4">
+                    <i class="fas fa-microphone-lines text-slate-400"></i> Tri-Voice Multi-Agent Architecture
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
+                    Tri-voice-agents
+                </h1>
+                <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    A unified single-page platform hosting three dedicated conversational voice agents for technical interviews, bedtime storytelling, and foreign language practice.
+                </p>
+            </div>
+
+            <!-- Agent Showcase Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                
+                <!-- Card 1: Interview Assistant -->
+                <div class="glass-panel p-6 flex flex-col justify-between hover:border-slate-600 transition-all">
+                    <div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-xl mb-4">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h2 class="text-lg font-bold mb-1 text-white">Interview Assistant</h2>
+                        <div class="text-xs text-slate-400 mb-3 font-medium">Persona: Natalie &bull; 17 Technical Tracks</div>
+                        <p class="text-slate-400 text-sm mb-5 leading-relaxed">
+                            Simulated technical & behavioral interviews with adaptive questions, voice response recording, speech-to-text, and detailed scoring rubric.
+                        </p>
+                        <div class="space-y-2 mb-6 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>17 Specializations (Python, DSA, System Design)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Real-time voice stream & microphone capture</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>5-question adaptive assessment scorecard</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button data-launch-agent="interview" class="w-full py-2.5 px-4 rounded-lg btn-primary font-medium text-sm flex items-center justify-center gap-2">
+                        <span>Open Interview Assistant</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Bedtime Story Generator -->
+                <div class="glass-panel p-6 flex flex-col justify-between hover:border-slate-600 transition-all">
+                    <div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-xl mb-4">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <h2 class="text-lg font-bold mb-1 text-white">Bedtime Storyteller</h2>
+                        <div class="text-xs text-slate-400 mb-3 font-medium">Persona: Luna &bull; Child Bedtime Tales</div>
+                        <p class="text-slate-400 text-sm mb-5 leading-relaxed">
+                            Personalized bedtime stories designed to be soothing and comforting for children, with gentle audio narration and chapter continuation.
+                        </p>
+                        <div class="space-y-2 mb-6 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Customized by child name, age, & interests</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Gentle, calming voice narration</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Multi-chapter (Part 1 & Part 2) story reader</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button data-launch-agent="story" class="w-full py-2.5 px-4 rounded-lg btn-story font-medium text-sm flex items-center justify-center gap-2">
+                        <span>Open Bedtime Storyteller</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3: Language Coach -->
+                <div class="glass-panel p-6 flex flex-col justify-between hover:border-slate-600 transition-all">
+                    <div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-xl mb-4">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h2 class="text-lg font-bold mb-1 text-white">Language Coach</h2>
+                        <div class="text-xs text-slate-400 mb-3 font-medium">Persona: Nancy &bull; 7 Languages</div>
+                        <p class="text-slate-400 text-sm mb-5 leading-relaxed">
+                            Conversational immersion practice across realistic scenarios with voice dialogue, live grammar tips, and comprehensive feedback reports.
+                        </p>
+                        <div class="space-y-2 mb-6 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>7 Languages (French, Spanish, Hindi, Japanese...)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Real-world immersion scenarios (Dining, Hotel...)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check text-slate-400"></i>
+                                <span>Grammar corrections & vocabulary review</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button data-launch-agent="language" class="w-full py-2.5 px-4 rounded-lg btn-language font-medium text-sm flex items-center justify-center gap-2">
+                        <span>Open Language Coach</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Architecture Footer Banner -->
+            <div class="glass-panel p-5 border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-white">Single-Port Architecture</div>
+                        <div class="text-xs text-slate-400">Integrated Flask backend serving all 3 agent APIs and frontend without port conflicts.</div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-400">
+                    <span class="px-2.5 py-1 bg-slate-800 rounded border border-slate-700">Gemini 3.5 Flash</span>
+                    <span class="px-2.5 py-1 bg-slate-800 rounded border border-slate-700">LangGraph</span>
+                    <span class="px-2.5 py-1 bg-slate-800 rounded border border-slate-700">Murf Falcon TTS</span>
+                    <span class="px-2.5 py-1 bg-slate-800 rounded border border-slate-700">AssemblyAI</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 1: INTERVIEW ASSISTANT INTERFACE                                -->
+        <!-- ===================================================================== -->
+        <section id="view-interview" class="agent-view hidden">
+            
+            <!-- Setup State -->
+            <div id="interviewSetupState" class="space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-medium mb-2 border border-slate-700">
+                            <i class="fas fa-briefcase"></i> Interview Preparation
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Technical & Behavioral Interview Room</h2>
+                        <p class="text-slate-400 text-sm mt-1">Select an interview topic to begin a 5-question adaptive interview with Natalie.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Interviewer</div>
+                            <div class="text-sm font-bold text-white">Natalie</div>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-lg">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject Selection Grid -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-slate-400"></i>
+                        <span>Select Interview Topic:</span>
+                    </h3>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="subject-pill active p-3 rounded-xl flex items-center gap-3" data-subject="Python">
+                            <i class="fab fa-python text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">Python</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="Generative AI">
+                            <i class="fas fa-brain text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">Generative AI</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="DSA (BASIC)">
+                            <i class="fas fa-code-branch text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">DSA (Basic)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="DSA(INTERMEDIATE)">
+                            <i class="fas fa-network-wired text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">DSA (Medium)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="DSA(PRO)">
+                            <i class="fas fa-project-diagram text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">DSA (Pro)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="SYSTEM DESIGN(LLD)">
+                            <i class="fas fa-cubes text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">System (LLD)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="SYSTEM DESIGN(HLD)">
+                            <i class="fas fa-sitemap text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">System (HLD)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="ML (BASIC)">
+                            <i class="fas fa-robot text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">ML (Basic)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="ML(INTERMEDIATE)">
+                            <i class="fas fa-microchip text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">ML (Medium)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="Ml(PRO)">
+                            <i class="fas fa-atom text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">ML (Pro)</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="SQL">
+                            <i class="fas fa-database text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">SQL & DB</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="HTML">
+                            <i class="fab fa-html5 text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">HTML5</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="CSS">
+                            <i class="fab fa-css3-alt text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">CSS & UI</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="Self Introduction">
+                            <i class="fas fa-user text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">Self Intro</span>
+                        </div>
+                        <div class="subject-pill p-3 rounded-xl flex items-center gap-3" data-subject="HR">
+                            <i class="fas fa-comments text-slate-300 text-lg"></i>
+                            <span class="text-sm font-medium">HR Behavioral</span>
+                        </div>
+                    </div>
+
+                    <!-- Selected Subject Bar & Action -->
+                    <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-slate-400 text-sm">Selected Subject:</span>
+                            <span id="interviewSelectedSubjectName" class="px-3 py-1 bg-slate-800 text-white font-semibold text-sm rounded border border-slate-700">Python</span>
+                        </div>
+                        <button id="btnStartInterview" class="w-full sm:w-auto px-8 py-2.5 rounded-lg btn-primary font-medium text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-play text-xs"></i>
+                            <span>Start Interview</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Interview Room State -->
+            <div id="interviewRoomState" class="space-y-6 hidden">
+                
+                <!-- Live Header & Progress -->
+                <div class="glass-panel p-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-base">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-white">Live Mock Interview</h3>
+                                <div id="interviewLiveStatus" class="text-xs text-slate-400">Connecting to Natalie...</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar & Questions -->
+                        <div class="w-full sm:w-48 text-right">
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Progress</span>
+                                <span id="interviewProgressLabel" class="font-bold text-white">Question 1 of 5</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                                <div id="interviewProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Speaking Status Box -->
+                    <div id="interviewNatalieBubble" class="p-4 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 text-xs">
+                                <i class="fas fa-volume-high"></i>
+                            </div>
+                            <div class="text-sm font-medium text-slate-300">
+                                Natalie is speaking through voice audio stream...
+                            </div>
+                        </div>
+                        <div class="equalizer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Recording Interaction Area -->
+                    <div class="p-6 bg-slate-900/50 rounded-xl border border-slate-800 text-center flex flex-col items-center justify-center">
+                        
+                        <!-- Record Button -->
+                        <button id="interviewRecordBtn" class="w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition-all duration-200 mb-3 shadow-sm" disabled>
+                            <i id="interviewRecordIcon" class="fas fa-microphone text-xl"></i>
+                        </button>
+
+                        <div id="interviewRecordLabel" class="text-sm font-semibold text-slate-200 mb-1">Record Answer</div>
+                        <div id="interviewTimerBadge" class="hidden text-xs font-mono font-bold text-red-400 px-2 py-0.5 bg-red-950/40 border border-red-800/40 rounded-full mb-3">00:00</div>
+
+                        <p class="text-xs text-slate-400 max-w-sm mb-4">
+                            Click to record your response. When done, click stop and submit your answer.
+                        </p>
+
+
+
+                        <!-- Buttons Row -->
+                        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                            <button id="interviewSubmitAnswerBtn" class="px-6 py-2.5 rounded-lg btn-primary font-medium text-sm flex items-center gap-2" disabled>
+                                <i class="fas fa-paper-plane text-xs"></i>
+                                <span>Submit Answer</span>
+                            </button>
+                            <button id="interviewEndEarlyBtn" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium border border-slate-700 transition-colors">
+                                End Interview Early
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Feedback Scorecard State -->
+            <div id="interviewFeedbackState" class="space-y-6 hidden">
+                <div class="glass-panel p-6 sm:p-8">
+                    
+                    <div class="text-center max-w-xl mx-auto mb-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-medium mb-3">
+                            <i class="fas fa-award"></i> Interview Completed
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Interview Performance Scorecard</h3>
+                        <p class="text-slate-400 text-sm mt-1">Detailed evaluation from Natalie based on your conversation responses.</p>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Subject</div>
+                            <div id="feedbackSubjectBadge" class="text-lg font-bold text-white">Python</div>
+                        </div>
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Candidate Score</div>
+                            <div id="feedbackScoreValue" class="text-2xl font-bold text-white">4.5 / 5</div>
+                        </div>
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Recommendation</div>
+                            <div class="text-sm font-bold text-slate-300">Ready for Technical Rounds</div>
+                        </div>
+                    </div>
+
+                    <!-- Strengths & Action Items -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-slate-400"></i> Strengths & Highlights
+                            </h4>
+                            <p id="feedbackStrengthsText" class="text-sm text-slate-300 leading-relaxed">
+                                Detailed strengths will be rendered here.
+                            </p>
+                        </div>
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800">
+                            <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                                <i class="fas fa-lightbulb text-slate-400"></i> Areas for Improvement
+                            </h4>
+                            <p id="feedbackImprovementsText" class="text-sm text-slate-300 leading-relaxed">
+                                Actionable suggestions will be rendered here.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center pt-4 border-t border-slate-800 flex flex-wrap items-center justify-center gap-4">
+                        <button id="interviewRestartBtn" class="px-6 py-2.5 rounded-lg btn-primary font-medium text-sm">
+                            <i class="fas fa-redo-alt mr-2 text-xs"></i> Practice Another Topic
+                        </button>
+                        <button onclick="switchTab('overview')" class="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm border border-slate-700">
+                            Back to Agent Hub
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 2: BEDTIME STORYTELLER INTERFACE                                -->
+        <!-- ===================================================================== -->
+        <section id="view-story" class="agent-view hidden">
+            
+            <!-- Story Creator State -->
+            <div id="storySetupState" class="space-y-6">
+                
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-medium mb-2 border border-slate-700">
+                            <i class="fas fa-star text-slate-400"></i> Gentle Bedtime Stories
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Bedtime Story Generator</h2>
+                        <p class="text-slate-400 text-sm mt-1">Create soothing, personalized bedtime tales narrated by Luna.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Storyteller</div>
+                            <div class="text-sm font-bold text-white">Luna</div>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-lg">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="glass-panel p-6 sm:p-8 max-w-3xl mx-auto">
+                    <div class="space-y-5">
+                        
+                        <!-- Child Name & Age Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Child's Name</label>
+                                <input type="text" id="storyChildNameInput" value="Leo" placeholder="e.g. Maya, Leo, Emma" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-slate-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Age</label>
+                                <select id="storyAgeSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-slate-600">
+                                    <option value="3">3 Years Old</option>
+                                    <option value="4">4 Years Old</option>
+                                    <option value="5" selected>5 Years Old</option>
+                                    <option value="6">6 Years Old</option>
+                                    <option value="7">7 Years Old</option>
+                                    <option value="8">8 Years Old</option>
+                                    <option value="9">9+ Years Old</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Interests & Favorite Things -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Favorite Things & Themes</label>
+                            <input type="text" id="storyInterestsInput" value="space rockets, glowing stars and friendly animals" placeholder="e.g. dragons, dinosaurs, underwater ocean, magical forest" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-slate-600 mb-2">
+                            
+                            <!-- Quick Tags -->
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="text-slate-400 mr-1 self-center">Suggestions:</span>
+                                <button type="button" class="story-tag px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">Friendly Dragons</button>
+                                <button type="button" class="story-tag px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">Starlight Forest</button>
+                                <button type="button" class="story-tag px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">Ocean Dolphins</button>
+                                <button type="button" class="story-tag px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">Cozy Teddy Bears</button>
+                            </div>
+                        </div>
+
+                        <!-- Life Lesson -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Subtle Lesson / Moral</label>
+                            <select id="storyLessonSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-slate-600">
+                                <option value="being brave" selected>Being Brave & Overcoming Fear</option>
+                                <option value="kindness and sharing">Kindness & Sharing with Others</option>
+                                <option value="patience and calm breathing">Patience & Calmness</option>
+                                <option value="curiosity and wonder">Curiosity & Wonder</option>
+                                <option value="the comfort of good dreams">Feeling Safe & Loved at Night</option>
+                            </select>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="pt-4 text-center">
+                            <button id="btnGenerateStory" class="w-full sm:w-auto px-8 py-3 rounded-lg btn-story font-medium text-sm flex items-center justify-center gap-2 mx-auto">
+                                <i class="fas fa-wand-magic-sparkles text-xs"></i>
+                                <span>Tell Bedtime Story</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bedtime Story Sanctuary State -->
+            <div id="storySanctuaryState" class="space-y-6 hidden">
+                <div class="glass-panel p-6 sm:p-8 max-w-4xl mx-auto">
+
+                    <!-- Sanctuary Header -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center text-lg">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div>
+                                <div id="storyHeroBadge" class="text-base font-bold text-white">Leo's Adventure</div>
+                                <div id="storyLessonBadge" class="text-xs text-slate-400">Theme: Being Brave</div>
+                            </div>
+                        </div>
+                        <div id="storyPartBadge" class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-medium">
+                            Part 1: The Journey Begins
+                        </div>
+                    </div>
+
+                    <!-- Audio Equalizer Bar -->
+                    <div class="p-4 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 text-xs">
+                                <i class="fas fa-volume-high"></i>
+                            </div>
+                            <div id="storyLiveStatus" class="text-sm font-medium text-slate-300">
+                                Luna is narrating your bedtime story...
+                            </div>
+                        </div>
+                        <div class="equalizer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Illustrated Story Book Reader -->
+                    <div class="p-6 sm:p-8 bg-slate-950/80 rounded-xl border border-slate-800 shadow-inner min-h-[180px] mb-8">
+                        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">Luna's Tale:</div>
+                        <p id="storyBookText" class="text-slate-200 text-base sm:text-lg leading-relaxed whitespace-pre-line">
+                            Once upon a time...
+                        </p>
+                    </div>
+
+                    <!-- Sanctuary Actions -->
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <button id="btnContinueStory" class="px-6 py-2.5 rounded-lg btn-story font-medium text-sm hidden">
+                            <i class="fas fa-forward mr-2 text-xs"></i> Continue Story (Part 2: The Next Night)
+                        </button>
+                        <button id="btnNewStory" class="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm border border-slate-700">
+                            Tell Another Story
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- VIEW 3: LANGUAGE COACH INTERFACE                                     -->
+        <!-- ===================================================================== -->
+        <section id="view-language" class="agent-view hidden">
+            
+            <!-- Language Setup State -->
+            <div id="langSetupState" class="space-y-6">
+                
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-medium mb-2 border border-slate-700">
+                            <i class="fas fa-language"></i> Conversational Fluency
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Language Coach</h2>
+                        <p class="text-slate-400 text-sm mt-1">Practice natural verbal dialogue with Nancy across 7 languages and realistic real-world scenarios.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Tutor</div>
+                            <div class="text-sm font-bold text-white">Nancy</div>
+                        </div>
+                        <div class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-lg">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Cards Grid -->
+                <div class="glass-panel p-6">
+                    <h3 class="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                        <i class="fas fa-globe text-slate-400"></i>
+                        <span>1. Choose Target Language:</span>
+                    </h3>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 mb-6">
+                        <div class="lang-card active p-4 rounded-xl text-center" data-language="French">
+                            <div class="text-2xl mb-1">🇫🇷</div>
+                            <div class="text-sm font-bold">French</div>
+                            <div class="text-[10px] text-slate-400">Français</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="Spanish">
+                            <div class="text-2xl mb-1">🇪🇸</div>
+                            <div class="text-sm font-bold">Spanish</div>
+                            <div class="text-[10px] text-slate-400">Español</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="Hindi">
+                            <div class="text-2xl mb-1">🇮🇳</div>
+                            <div class="text-sm font-bold">Hindi</div>
+                            <div class="text-[10px] text-slate-400">हिन्दी</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="Japanese">
+                            <div class="text-2xl mb-1">🇯🇵</div>
+                            <div class="text-sm font-bold">Japanese</div>
+                            <div class="text-[10px] text-slate-400">日本語</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="German">
+                            <div class="text-2xl mb-1">🇩🇪</div>
+                            <div class="text-sm font-bold">German</div>
+                            <div class="text-[10px] text-slate-400">Deutsch</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="Telugu">
+                            <div class="text-2xl mb-1">🇮🇳</div>
+                            <div class="text-sm font-bold">Telugu</div>
+                            <div class="text-[10px] text-slate-400">తెలుగు</div>
+                        </div>
+                        <div class="lang-card p-4 rounded-xl text-center" data-language="Tamil">
+                            <div class="text-2xl mb-1">🇮🇳</div>
+                            <div class="text-sm font-bold">Tamil</div>
+                            <div class="text-[10px] text-slate-400">தமிழ்</div>
+                        </div>
+                    </div>
+
+                    <!-- Scenarios Grid -->
+                    <h3 class="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                        <i class="fas fa-location-dot text-slate-400"></i>
+                        <span>2. Choose Immersion Scenario:</span>
+                    </h3>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-8">
+                        <div class="scenario-pill active p-3 rounded-xl text-center" data-scenario="ordering food">
+                            <div class="text-xl mb-1">🥐</div>
+                            <div class="text-xs font-bold">Ordering Food</div>
+                        </div>
+                        <div class="scenario-pill p-3 rounded-xl text-center" data-scenario="hotel check-in">
+                            <div class="text-xl mb-1">🏨</div>
+                            <div class="text-xs font-bold">Hotel Check-in</div>
+                        </div>
+                        <div class="scenario-pill p-3 rounded-xl text-center" data-scenario="job interview">
+                            <div class="text-xl mb-1">💼</div>
+                            <div class="text-xs font-bold">Job Interview</div>
+                        </div>
+                        <div class="scenario-pill p-3 rounded-xl text-center" data-scenario="asking directions">
+                            <div class="text-xl mb-1">🗺️</div>
+                            <div class="text-xs font-bold">Directions</div>
+                        </div>
+                        <div class="scenario-pill p-3 rounded-xl text-center" data-scenario="shopping at a market">
+                            <div class="text-xl mb-1">🛍️</div>
+                            <div class="text-xs font-bold">Market Shopping</div>
+                        </div>
+                        <div class="scenario-pill p-3 rounded-xl text-center" data-scenario="casual coffee chat">
+                            <div class="text-xl mb-1">☕</div>
+                            <div class="text-xs font-bold">Coffee Chat</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-slate-400 text-sm">Selected:</span>
+                            <span id="langSelectedBadge" class="px-3 py-1 bg-slate-800 text-white font-medium text-sm rounded border border-slate-700">French</span>
+                            <span class="text-slate-600">&bull;</span>
+                            <span id="scenarioSelectedBadge" class="px-3 py-1 bg-slate-800 text-white font-medium text-sm rounded border border-slate-700">ordering food</span>
+                        </div>
+                        <button id="btnStartLangSession" class="w-full sm:w-auto px-8 py-2.5 rounded-lg btn-language font-medium text-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-play text-xs"></i>
+                            <span>Start Practice Session</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Language Practice Room State -->
+            <div id="langRoomState" class="space-y-6 hidden">
+                <div class="glass-panel p-6">
+                    
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 text-base">
+                                <i class="fas fa-headphones"></i>
+                            </div>
+                            <div>
+                                <div id="langActiveBadge" class="text-base font-bold text-white">French &bull; Ordering Food</div>
+                                <div id="langLiveStatus" class="text-xs text-slate-400">Connecting with Nancy...</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar & Exchanges -->
+                        <div class="w-full sm:w-48 text-right">
+                            <div class="flex justify-between text-xs text-slate-400 mb-1">
+                                <span>Session Progress</span>
+                                <span id="langProgressLabel" class="font-bold text-white">Exchange 1 of 5</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                                <div id="langProgressBar" class="bg-slate-400 h-2 rounded-full transition-all duration-300" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Speaking Box -->
+                    <div class="p-4 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 text-xs">
+                                <i class="fas fa-volume-high"></i>
+                            </div>
+                            <div class="text-sm font-medium text-slate-300">
+                                Nancy is speaking... Listen carefully!
+                            </div>
+                        </div>
+                        <div class="equalizer">
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                            <div class="equalizer-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Interaction Center -->
+                    <div class="p-6 bg-slate-900/50 rounded-xl border border-slate-800 text-center flex flex-col items-center justify-center">
+                        
+                        <!-- Record Button -->
+                        <button id="langRecordBtn" class="w-16 h-16 rounded-full bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center transition-all duration-200 mb-3" disabled>
+                            <i id="langRecordIcon" class="fas fa-microphone text-xl"></i>
+                        </button>
+
+                        <div id="langRecordLabel" class="text-sm font-semibold text-slate-200 mb-1">Record Verbal Response</div>
+                        <div id="langTimerBadge" class="hidden text-xs font-mono font-bold text-red-400 px-2 py-0.5 bg-red-950/40 border border-red-800/40 rounded-full mb-3">00:00</div>
+
+                        <p class="text-xs text-slate-400 max-w-sm mb-4">
+                            Speak naturally in the target language. Nancy will provide real-time responses and grammar tips.
+                        </p>
+
+
+
+                        <!-- Buttons Row -->
+                        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                            <button id="langSubmitResponseBtn" class="px-6 py-2.5 rounded-lg btn-language font-medium text-sm flex items-center gap-2" disabled>
+                                <i class="fas fa-paper-plane text-xs"></i>
+                                <span>Send Response</span>
+                            </button>
+                            <button id="langEndEarlyBtn" class="px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium border border-slate-700 transition-colors">
+                                End Session Early
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Fluency & Grammar Assessment State -->
+            <div id="langAssessmentState" class="space-y-6 hidden">
+                <div class="glass-panel p-6 sm:p-8">
+                    
+                    <div class="text-center max-w-xl mx-auto mb-8">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-medium mb-3">
+                            <i class="fas fa-graduation-cap"></i> Practice Complete
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Fluency & Grammar Evaluation</h3>
+                        <p class="text-slate-400 text-sm mt-1">Detailed evaluation from Nancy on pronunciation, grammar rules, and new vocabulary.</p>
+                    </div>
+
+                    <!-- Scores Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Fluency Score</div>
+                            <div id="assessFluencyScore" class="text-2xl font-bold text-white">8.5 / 10</div>
+                        </div>
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Grammar Accuracy</div>
+                            <div id="assessGrammarScore" class="text-2xl font-bold text-white">8.0 / 10</div>
+                        </div>
+                        <div class="p-5 bg-slate-900/60 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs uppercase text-slate-400 font-semibold mb-1">Vocabulary Range</div>
+                            <div id="assessVocabRange" class="text-base font-bold text-slate-200">MODERATE</div>
+                        </div>
+                    </div>
+
+                    <!-- Grammar Mistakes Breakdown Table -->
+                    <div class="mb-8 p-6 bg-slate-900/60 rounded-xl border border-slate-800 overflow-hidden">
+                        <h4 class="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+                            <i class="fas fa-spell-check text-slate-400"></i> Grammar Corrections & Feedback
+                        </h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-400">
+                                        <th class="px-4 py-3">What You Said</th>
+                                        <th class="px-4 py-3">Correct Form</th>
+                                        <th class="px-4 py-3">Rule / Nuance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assessMistakesTbody">
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-3 text-center text-slate-400">Loading feedback...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- New Words to Learn -->
+                    <div class="mb-8 p-6 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <h4 class="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <i class="fas fa-book-open text-slate-400"></i> Recommended New Vocabulary
+                        </h4>
+                        <div id="assessNewWordsContainer" class="flex flex-wrap gap-2">
+                            <!-- Words injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Nancy's Practical Tip -->
+                    <div class="mb-8 p-5 bg-slate-900/80 border border-slate-800 rounded-xl">
+                        <h4 class="text-sm font-bold text-slate-200 mb-2 flex items-center gap-2">
+                            <i class="fas fa-comment-dots text-slate-400"></i> Nancy's Conversational Tip
+                        </h4>
+                        <p id="assessTipText" class="text-sm text-slate-300 leading-relaxed">
+                            Practice with daily phrases and listen to native speakers.
+                        </p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center pt-4 border-t border-slate-800 flex flex-wrap items-center justify-center gap-4">
+                        <button id="langRestartBtn" class="px-6 py-2.5 rounded-lg btn-language font-medium text-sm">
+                            <i class="fas fa-redo-alt mr-2 text-xs"></i> Practice Another Scenario
+                        </button>
+                        <button onclick="switchTab('overview')" class="px-6 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm border border-slate-700">
+                            Back to Agent Hub
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Master Footer -->
+    <footer class="border-t border-slate-800/80 py-5 px-4 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>Tri-voice-agents &bull; Single-Page Voice Integration Platform</div>
+            <div class="flex items-center gap-4">
+                <span>Flask & LangGraph</span>
+                <span>&bull;</span>
+                <span>Falcon TTS Real-Time Stream</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Master Controller Script -->
+    <script src="/js/app.js"></script>
+</body>
+</html>

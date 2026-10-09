@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaAI - Language Coach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-pink': '#FFB6C1',
+                        'brand-hot': '#FF69B4',
+                        'brand-bg': '#FFF0F3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hidden { display: none !important; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .recording-active { animation: pulse 1.5s infinite; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 105, 180, 0); }
+        }
+
+        .lang-card { transition: all 0.2s; }
+        .lang-card:hover { border-color: #FF69B4; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 105, 180, 0.15); }
+        .lang-card.selected { border-color: #FF69B4; background: #FFF0F5; }
+
+        .scenario-option { transition: all 0.2s; cursor: pointer; }
+        .scenario-option:hover { border-color: #FF69B4; }
+        .scenario-option.selected { border-color: #1a1a1a; border-width: 2px; }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        .wave-bar { animation: soundWave 1.2s ease-in-out infinite; transform-origin: bottom; }
+        .wave-bar:nth-child(1) { animation-delay: 0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(6) { animation-delay: 0.5s; }
+        .wave-bar:nth-child(7) { animation-delay: 0.3s; }
+    </style>
+</head>
+
+<body class="bg-white min-h-screen text-gray-900 font-inter">
+
+    <!-- Navbar -->
+    <nav class="border-b border-gray-100 px-6 lg:px-12 py-4 flex items-center justify-between bg-white">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-brand-hot rounded-lg flex items-center justify-center">
+                <i class="fas fa-language text-white text-sm"></i>
+            </div>
+            <span class="font-space font-bold text-xl tracking-tight text-gray-900">LinguaAI</span>
+        </div>
+        <span class="text-gray-400 text-sm hidden sm:inline">AI-Powered Language Coach</span>
+    </nav>
+
+    <!-- ==================== WELCOME STATE ==================== -->
+    <div id="welcomeState">
+
+        <!-- Hero Section -->
+        <div class="bg-brand-bg">
+            <div class="max-w-6xl mx-auto px-6 lg:px-12 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-10">
+                <!-- Left -->
+                <div class="flex-1 text-center lg:text-left">
+                    <h1 class="font-space font-bold text-4xl lg:text-5xl xl:text-6xl tracking-tight text-gray-900 leading-tight mb-6">
+                        Learn faster<br>with your AI<br>language coach.
+                    </h1>
+                    <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto lg:mx-0">Practice real conversations with Nancy, your personal AI tutor who adapts to your level.</p>
+                    <a href="#setup" class="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-gray-800 transition-colors">
+                        Start practicing <i class="fas fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+                <!-- Right - Tutor Image -->
+                <div class="flex-1 flex justify-center">
+                    <div class="relative">
+                        <div class="w-72 h-72 lg:w-80 lg:h-80 rounded-2xl overflow-hidden shadow-xl">
+                            <img src="https://nkb-backend-ccbp-media-static.s3-ap-south-1.amazonaws.com/ccbp_beta/media/content_loading/uploads/8e08a67a-3e1f-440d-9b2f-7594772ead62_b52a6fed10d6618563b1fdff599ab4e3%20(1).png" alt="Nancy - AI Coach" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Tutor badge -->
+                        <div class="absolute -bottom-4 left-4 bg-white rounded-xl shadow-lg px-4 py-3 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-hot">
+                                <img src="https://nkb-backend-ccbp-media-static.s3-ap-south-1.amazonaws.com/ccbp_beta/media/content_loading/uploads/8e08a67a-3e1f-440d-9b2f-7594772ead62_b52a6fed10d6618563b1fdff599ab4e3%20(1).png" alt="Nancy" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="font-semibold text-sm text-gray-900">Nancy</p>
+                                <p class="text-xs text-gray-500">AI Coach <span class="text-brand-hot font-medium">&#9733; 4.9</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="border-b border-gray-100 py-8">
+            <div class="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-8 lg:gap-16 text-center">
+                <div>
+                    <p class="font-space font-bold text-2xl text-gray-900">7+</p>
+                    <p class="text-gray-500 text-sm">Languages</p>
+                </div>
+                <div>
+                    <p class="font-space font-bold text-2xl text-gray-900">6+</p>
+                    <p class="text-gray-500 text-sm">Scenarios</p>
+                </div>
+                <div>
+                    <p class="font-space font-bold text-2xl text-gray-900">5</p>
+                    <p class="text-gray-500 text-sm">Exchanges per session</p>
+                </div>
+                <div>
+                    <p class="font-space font-bold text-2xl text-gray-900">AI</p>
+                    <p class="text-gray-500 text-sm">Powered feedback</p>
+                </div>
+                <div class="flex items-center gap-1">
+                    <p class="font-space font-bold text-2xl text-gray-900">4.8</p>
+                    <div class="flex text-yellow-400 text-sm">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language Cards -->
+        <div id="setup" class="max-w-5xl mx-auto px-6 lg:px-12 py-12">
+            <h2 class="font-space font-bold text-2xl lg:text-3xl text-gray-900 mb-2">Choose a language</h2>
+            <p class="text-gray-500 mb-8">Select which language you'd like to practice today</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="French">
+                    <span class="text-3xl">&#127467;&#127479;</span>
+                    <span class="font-semibold text-sm text-gray-900">French</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="Spanish">
+                    <span class="text-3xl">&#127466;&#127480;</span>
+                    <span class="font-semibold text-sm text-gray-900">Spanish</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="Hindi">
+                    <span class="text-3xl">&#127470;&#127475;</span>
+                    <span class="font-semibold text-sm text-gray-900">Hindi</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="Japanese">
+                    <span class="text-3xl">&#127471;&#127477;</span>
+                    <span class="font-semibold text-sm text-gray-900">Japanese</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="German">
+                    <span class="text-3xl">&#127465;&#127466;</span>
+                    <span class="font-semibold text-sm text-gray-900">German</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="Telugu">
+                    <span class="text-3xl">&#127470;&#127475;</span>
+                    <span class="font-semibold text-sm text-gray-900">Telugu</span>
+                </button>
+                <button class="lang-card border-2 border-gray-200 rounded-xl p-5 flex flex-col items-center gap-3 bg-white" data-lang="Tamil">
+                    <span class="text-3xl">&#127470;&#127475;</span>
+                    <span class="font-semibold text-sm text-gray-900">Tamil</span>
+                </button>
+            </div>
+
+            <!-- Scenario Selection (hidden until language selected) -->
+            <div id="scenarioSection" class="hidden">
+                <h2 class="font-space font-bold text-2xl lg:text-3xl text-gray-900 mb-2">What's your scenario?</h2>
+                <p class="text-gray-500 mb-8">Pick a real-life situation to practice</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="ordering food at a restaurant">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-utensils text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Ordering Food</p>
+                            <p class="text-xs text-gray-500">At a restaurant</p>
+                        </div>
+                    </button>
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="asking for directions">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-signs text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Asking Directions</p>
+                            <p class="text-xs text-gray-500">Finding your way</p>
+                        </div>
+                    </button>
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="job interview">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-briefcase text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Job Interview</p>
+                            <p class="text-xs text-gray-500">Professional setting</p>
+                        </div>
+                    </button>
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="shopping at a market">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-shopping-bag text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Shopping</p>
+                            <p class="text-xs text-gray-500">At a market</p>
+                        </div>
+                    </button>
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="checking into a hotel">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-hotel text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Hotel Check-in</p>
+                            <p class="text-xs text-gray-500">Checking in</p>
+                        </div>
+                    </button>
+                    <button class="scenario-option border-2 border-gray-200 rounded-xl p-5 flex items-center gap-4 bg-white text-left" data-scenario="visiting a doctor">
+                        <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-stethoscope text-brand-hot"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm text-gray-900">Doctor Visit</p>
+                            <p class="text-xs text-gray-500">Health conversation</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Begin Button -->
+                <button id="beginSessionBtn" disabled class="w-full sm:w-auto bg-gradient-to-r from-pink-400 to-pink-500 text-white px-10 py-4 rounded-xl font-bold text-base hover:from-pink-500 hover:to-pink-600 transition-all duration-300 shadow-lg shadow-pink-200">
+                    Begin Session <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden selects for JS compatibility -->
+    <select id="languageSelect" class="hidden"></select>
+    <select id="scenarioSelect" class="hidden"></select>
+
+    <!-- ==================== SESSION STATE ==================== -->
+    <div id="sessionState" class="hidden">
+        <div class="max-w-5xl mx-auto px-6 lg:px-12 py-8">
+
+            <!-- Top Info -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <span id="languageBadge" class="bg-gray-900 text-white px-5 py-2 rounded-full font-semibold text-sm">French</span>
+                    <span id="scenarioBadge" class="border border-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm font-medium">Ordering Food</span>
+                </div>
+                <div class="flex items-center gap-2 bg-brand-bg px-5 py-2.5 rounded-full">
+                    <div class="flex gap-1">
+                        <div class="w-2 h-2 rounded-full bg-brand-hot"></div>
+                        <div class="w-2 h-2 rounded-full bg-pink-300"></div>
+                        <div class="w-2 h-2 rounded-full bg-pink-200"></div>
+                        <div class="w-2 h-2 rounded-full bg-gray-200"></div>
+                        <div class="w-2 h-2 rounded-full bg-gray-200"></div>
+                    </div>
+                    <span class="text-gray-600 text-sm font-medium ml-2">Exchange <span id="exchangeNum" class="text-brand-hot font-bold">1</span>/5</span>
+                </div>
+            </div>
+
+            <!-- Two Column: Nancy + Controls -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+
+                <!-- Nancy Column -->
+                <div class="lg:col-span-2 flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <div class="w-44 h-44 lg:w-56 lg:h-56 rounded-2xl overflow-hidden border-2 border-pink-200 shadow-lg">
+                            <img src="https://nkb-backend-ccbp-media-static.s3-ap-south-1.amazonaws.com/ccbp_beta/media/content_loading/uploads/8e08a67a-3e1f-440d-9b2f-7594772ead62_b52a6fed10d6618563b1fdff599ab4e3%20(1).png" alt="Nancy" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-brand-hot rounded-full flex items-center justify-center border-2 border-white shadow">
+                            <i class="fas fa-microphone text-white text-sm"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-900 text-lg font-semibold">Nancy</p>
+                    <p class="text-gray-500 text-sm">Your Language Coach</p>
+
+                    <!-- Speaking Bubble -->
+                    <div id="speakingBubble" class="hidden mt-4 flex items-center gap-3 px-5 py-3 bg-brand-bg rounded-full border border-pink-200">
+                        <div class="flex items-end gap-0.5 h-5">
+                            <div class="w-1 h-5 bg-brand-hot rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-pink-400 rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-brand-hot rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-pink-400 rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-pink-300 rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-brand-hot rounded-full wave-bar"></div>
+                            <div class="w-1 h-5 bg-pink-400 rounded-full wave-bar"></div>
+                        </div>
+                        <span class="text-gray-700 text-sm font-medium">Speaking...</span>
+                    </div>
+                </div>
+
+                <!-- Controls Column -->
+                <div class="lg:col-span-3 flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-8 border border-gray-100">
+
+                    <button id="startSessionBtn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-10 py-4 rounded-full font-bold text-lg hover:from-pink-500 hover:to-pink-600 transition-all duration-300 shadow-lg shadow-pink-200 mb-4">
+                        <i class="fas fa-play mr-2"></i> Start Conversation
+                    </button>
+
+                    <button id="recordBtn" disabled class="hidden w-24 h-24 lg:w-28 lg:h-28 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center transition-all duration-300 border-2 border-gray-200 hover:border-brand-hot mb-4">
+                        <i id="micIcon" class="fas fa-microphone text-3xl lg:text-4xl"></i>
+                        <i id="stopIcon" class="fas fa-stop text-3xl lg:text-4xl hidden"></i>
+                    </button>
+
+                    <p id="recordingStatus" class="text-gray-500 text-base mb-6">Click Start Conversation to begin</p>
+
+                    <button id="submitBtn" disabled class="hidden bg-gradient-to-r from-pink-400 to-pink-500 text-white px-8 py-3 rounded-full font-bold text-base hover:from-pink-500 hover:to-pink-600 transition-all shadow-lg shadow-pink-200 mb-4">
+                        <i class="fas fa-paper-plane mr-2"></i> Submit Response
+                    </button>
+
+                    <button id="endSessionBtn" disabled class="border border-gray-300 text-gray-500 px-6 py-2.5 rounded-xl transition-all duration-300 hover:border-red-300 hover:text-red-500 font-medium text-sm">
+                        <i class="fas fa-stop-circle mr-1"></i> End Conversation
+                    </button>
+                </div>
+            </div>
+
+            <!-- ==================== FEEDBACK SECTION ==================== -->
+            <div id="feedbackSection" class="hidden mt-6 pt-8 border-t border-gray-100">
+
+                <!-- Get Feedback Button -->
+                <div id="getFeedbackArea" class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 bg-green-50 px-6 py-3 rounded-full mb-4 border border-green-200">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span class="text-gray-700 text-base">Conversation completed!</span>
+                    </div>
+                    <br>
+                    <button id="getFeedbackBtn" class="bg-gradient-to-r from-pink-400 to-pink-500 text-white px-10 py-3.5 rounded-full font-bold text-base hover:from-pink-500 hover:to-pink-600 transition-all shadow-lg shadow-pink-200 mt-3">
+                        <i class="fas fa-chart-bar mr-2"></i> Get Feedback
+                    </button>
+                </div>
+
+                <!-- Feedback Content -->
+                <div id="feedbackContent" class="hidden max-w-3xl mx-auto">
+
+                    <!-- Scores Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                        <!-- Language Card -->
+                        <div class="bg-brand-bg rounded-2xl p-6 text-center border border-pink-100">
+                            <p class="text-gray-500 text-xs uppercase tracking-wider mb-2">Language</p>
+                            <h3 id="feedbackLanguage" class="font-space text-xl font-bold text-gray-900">Language</h3>
+                            <p id="feedbackScenario" class="text-gray-500 text-xs mt-1"></p>
+                        </div>
+
+                        <!-- Fluency Score -->
+                        <div class="bg-white rounded-2xl p-6 flex flex-col items-center border border-gray-100">
+                            <p class="text-gray-500 text-xs uppercase tracking-wider mb-3">Fluency</p>
+                            <div class="relative w-24 h-24">
+                                <svg class="w-24 h-24 transform -rotate-90">
+                                    <circle cx="48" cy="48" r="40" stroke="#f3f4f6" stroke-width="5" fill="none" />
+                                    <circle id="fluencyCircle" cx="48" cy="48" r="40" stroke="url(#fluencyGradient)" stroke-width="5" fill="none" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" class="transition-all duration-1000" />
+                                    <defs>
+                                        <linearGradient id="fluencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#FF69B4" />
+                                            <stop offset="100%" stop-color="#ff85c8" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span id="fluencyValue" class="text-2xl font-bold text-gray-900">0</span>
+                                    <span class="text-xs text-gray-400">/10</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grammar Score -->
+                        <div class="bg-white rounded-2xl p-6 flex flex-col items-center border border-gray-100">
+                            <p class="text-gray-500 text-xs uppercase tracking-wider mb-3">Grammar</p>
+                            <div class="relative w-24 h-24">
+                                <svg class="w-24 h-24 transform -rotate-90">
+                                    <circle cx="48" cy="48" r="40" stroke="#f3f4f6" stroke-width="5" fill="none" />
+                                    <circle id="grammarCircle" cx="48" cy="48" r="40" stroke="url(#grammarGradient)" stroke-width="5" fill="none" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" class="transition-all duration-1000" />
+                                    <defs>
+                                        <linearGradient id="grammarGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#1a1a1a" />
+                                            <stop offset="100%" stop-color="#FF69B4" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span id="grammarValue" class="text-2xl font-bold text-gray-900">0</span>
+                                    <span class="text-xs text-gray-400">/10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Cards -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                        <!-- Vocabulary Range -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                            <h4 class="text-base font-bold mb-2 flex items-center gap-2 text-gray-900">
+                                <i class="fas fa-book text-brand-hot"></i>
+                                Vocabulary Range
+                            </h4>
+                            <p id="vocabularyText" class="text-gray-600 leading-relaxed text-sm"></p>
+                        </div>
+
+                        <!-- Conversation Tip -->
+                        <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                            <h4 class="text-base font-bold mb-2 flex items-center gap-2 text-gray-900">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                Conversation Tip
+                            </h4>
+                            <p id="conversationTipText" class="text-gray-600 leading-relaxed text-sm"></p>
+                        </div>
+                    </div>
+
+                    <!-- Grammar Mistakes Table -->
+                    <div class="bg-white rounded-2xl p-6 mb-6 border border-gray-100">
+                        <h4 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-900">
+                            <i class="fas fa-pen-fancy text-brand-hot"></i>
+                            Grammar Mistakes
+                        </h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100">
+                                        <th class="text-left text-gray-500 font-medium py-3 pr-4">You Said</th>
+                                        <th class="text-left text-gray-500 font-medium py-3 pr-4">Correct</th>
+                                        <th class="text-left text-gray-500 font-medium py-3">Rule</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mistakesTable"></tbody>
+                            </table>
+                        </div>
+                        <p id="noMistakesText" class="hidden text-gray-500 text-sm py-2">No grammar mistakes detected!</p>
+                    </div>
+
+                    <!-- New Words to Learn -->
+                    <div class="bg-brand-bg rounded-2xl p-6 mb-8 border border-pink-100">
+                        <h4 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-900">
+                            <i class="fas fa-lightbulb text-amber-400"></i>
+                            New Words to Learn
+                        </h4>
+                        <div id="newWordsArea" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <!-- New Session Button -->
+                    <div class="text-center">
+                        <button id="newSessionBtn" class="bg-gray-900 text-white px-10 py-3 rounded-xl font-bold text-base hover:bg-gray-800 transition-colors">
+                            <i class="fas fa-redo mr-2"></i> Start New Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
